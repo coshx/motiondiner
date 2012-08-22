@@ -21,7 +21,8 @@ class TruckController < ApplicationController
   protected
 
   def load_truck
-    @truck = Truck.find(params[:id])
+    @truck = Truck.find_by_id(params[:id])
+    render :json => "Truck Not found".to_json, :status => 404 unless @truck.present?
   end
 
 
