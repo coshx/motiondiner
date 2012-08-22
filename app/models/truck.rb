@@ -17,4 +17,13 @@ class Truck < ActiveRecord::Base
     self.open =true
     self.save!
   end
+
+  def close!
+    return nil unless self.open?
+    opening = current_opening
+    opening.closed_at = DateTime.now
+    opening.save!
+    self.open = false
+    self.save!
+  end
 end
