@@ -27,10 +27,10 @@ group :development, :test do
   gem 'pry-remote'
   gem 'pry-nav'
   gem 'rspec-rails'
+  gem 'factory_girl_rails' #for rails c
 end
 
 group :test do
-  gem 'factory_girl_rails'
 end 
 
 # To use ActiveModel has_secure_password
