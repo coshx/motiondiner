@@ -5,7 +5,7 @@ gem 'rails', '3.2.8'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'pg'
+gem 'mysql2'
 
 
 # Gems used only for assets and not required
@@ -26,11 +26,10 @@ group :development, :test do
   gem 'pry'
   gem 'pry-remote'
   gem 'pry-nav'
+  gem 'rspec-rails'
 end
 
 group :test do
-  gem 'rspec'
-  gem 'rspec-rails'
   gem 'factory_girl_rails'
 end 
 

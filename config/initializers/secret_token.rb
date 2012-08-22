@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-MotionDiner::Application.config.secret_token = '325bb1507f301775844bbf9409d42678375d77716f34360bb59d50f13f7b6f6a3947a5306710f6b02e5bef1ca5b717ed975bb311988cb64fb6197089b4fdfde0'
+MotionDiner::Application.config.secret_token = '11f412737e94b9ba106d5ebce7e6c9704d31406e3d47e46f05e12ad27c7074313f74464b651e613b504756fe20a0c1da1bd3df0a604c2cdf5f6846c5f14a409e'
