@@ -8,11 +8,7 @@ class TruckController < ApplicationController
 
   #non-restful actions
   def open
-    @truck.open = true
-    @truck.lat = params[:lat]
-    @truck.long = params[:long]
-    @truck.opened_at = DateTime.now
-    @truck.save!
+    @truck.open_at(params[:lat].to_f, params[:lng].to_f)
     render nothing: true
   end
 

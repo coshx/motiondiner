@@ -3,14 +3,13 @@ require 'spec_helper'
 describe TruckController do
 
   describe "open" do
-    let(:truck) {FactoryGirl.create(:truck)}
+    let(:truck) {FactoryGirl.build_stubbed(:truck)}
     it "opens the truck at the given location" do
-      put :open, id: truck.id, lat: "40.0150 N", long: "105.2700 W"
-      now = DateTime.now
-      DateTime.stub(:now) {now}
-      truck.reload.open.should be_true
-      truck.lat.should == "40.0150 N"
-      truck.long.should == "105.2700 W"
+      Truck.stub(:find) {truck}
+      truck.should_receive(:open_at).with(40.015, 105.270)
+      put :open, id: truck.id, lat: 40.015, lng: 105.270
+      response.should be_successful
+
     end
   end
 

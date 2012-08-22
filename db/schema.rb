@@ -11,16 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120822190405) do
+ActiveRecord::Schema.define(:version => 20120822200538) do
+
+  create_table "openings", :force => true do |t|
+    t.float    "lat"
+    t.float    "lng"
+    t.integer  "truck_id"
+    t.datetime "opened_at"
+    t.datetime "closed_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "trucks", :force => true do |t|
     t.string   "name"
     t.boolean  "open"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
-    t.string   "lat"
-    t.string   "long"
-    t.boolean  "opened_at"
   end
 
 end
