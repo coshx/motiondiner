@@ -28,4 +28,12 @@ describe TruckController do
     end
   end
 
+  describe "show" do
+    it "renders json" do
+      Truck.stub(:find_by_id).with(truck.id.to_s) {truck}
+      get :show, id: truck.id
+      response.body.should == truck.to_json
+    end
+  end
+
 end
