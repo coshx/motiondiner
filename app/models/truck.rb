@@ -42,8 +42,9 @@ class Truck < ActiveRecord::Base
 
     opening_distribution = Hash.new(0)
     recent_openings.each do |opening|
-      similar_openings_count = Opening.where(:truck_id => self.id).where("created_at > ? AND created_at < ?", opening.created_at - 30.minutes, opening.created_at + 30.minutes)
-      opening_distribution[open] = similar_openings_count
+      similar_openings_count = recent_openings.select{|o| o.created_at.wday == opening.created_at.wday && o.created_at - o.created_at.beginning_of_day > (opening.created_at - 30.minutes) - opening.created_at.beginning_of_day && o.created_at - o.created_at.beginning_of_day < (opening.created_at + 30.minutes) - opening.created_at.beginning_of_day }.length
+      recent_openings.select{|o| o.created_at.wday == opening.created_at.wday}
+      opening_distribution[opening] = similar_openings_count
     end
     
 
