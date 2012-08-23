@@ -1,11 +1,11 @@
-class WelcomeController < UIViewController
+class WelcomeViewController < UIViewController
 
   # loadView is called before anything is displayed - this is where we should allocate instance vars and such
   def loadView
     self.view = UIView.alloc.init
     self.title = "MotionDiner"
     # set background color to a nice steel blue
-    self.view.backgroundColor = UIColor.colorWithRed(0.894, green: 0.922, blue: 0.969, alpha: 1.0)
+    self.view.backgroundColor = AppConstants.defaultBackgroundColor
   end
 
   # viewDidLoad is called when this viewController's main view is actually shown, so here is where we can make this actually get displayed
@@ -20,16 +20,14 @@ class WelcomeController < UIViewController
 
   # called when diner button is activated
   def dinerSelected
-    alert = UIAlertView.new
-    alert.message = "You're a diner! Go eat!"
-    alert.show
+    dinerViewController = DinerViewController.alloc.init
+    self.parentViewController.pushViewController(dinerViewController, animated: true)
   end
 
   # called when truck button is activated
   def truckSelected
-    alert = UIAlertView.new
-    alert.message = "You're a truck! Go serve food!"
-    alert.show
+    truckViewController = TruckViewController.alloc.init
+    self.parentViewController.pushViewController(truckViewController, animated: true)
   end
 
   def makeDinerButton    
