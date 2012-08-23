@@ -11,8 +11,7 @@ class TruckViewController < UIViewController
     @truckIDLabel = makeTruckIDLabel
     self.view.addSubview(@truckIDLabel)
 
-    @truckIDTextField = makeTruckIDTextField
-    #@truckIDTextField.addTarget(self, action:"truckIDEntered", forControlEvents:UIControlEventEditingDidEndOnExit)
+    @truckIDTextField = makeTruckIDTextField    
     view.addSubview(@truckIDTextField)
 
     @truckStatusLabel = makeTruckStatusLabel
@@ -21,11 +20,11 @@ class TruckViewController < UIViewController
     @truckStatus = makeTruckStatus
     view.addSubview(@truckStatus)
 
-    # @truckOpenButton = makeTruckOpenButton
-    # view.addSubview(@truckOpenButton)
+    @truckOpenButton = makeTruckOpenButton
+    view.addSubview(@truckOpenButton)
 
-    # @truckCloseButton = makeTruckCloseButton
-    # view.addSubview(@truckCloseButton)
+    @truckCloseButton = makeTruckCloseButton
+    view.addSubview(@truckCloseButton)
   end
 
   # need to tie in to touch callbacks to hide keyboard when user taps away
@@ -47,12 +46,7 @@ class TruckViewController < UIViewController
       #p response.body.to_str
       if response.ok?
         json = BubbleWrap::JSON.parse(response.body.to_str)
-        open = json["open"]
-        if open
-          @truckStatus.text = "Open!"
-        else
-          @truckStatus.text = "Closed."
-        end
+        updateTruckStatusText(json)
       elsif response.status_code.to_s =~ /4\d\d/
         @truckStatus.text = "Error!"        
       else
@@ -103,11 +97,48 @@ class TruckViewController < UIViewController
   end
 
   def makeTruckOpenButton
-    UIView.new
+    button = UIButton.buttonWithType UIButtonTypeRoundedRect
+    button.frame = [[10, 150], [300, 30]]
+    button.setTitle("Open Truck", forState:UIControlStateNormal)
+    button.when(UIControlEventTouchUpInside) do
+      updateRemoteTruckStatus(:open)      
+    end
   end
 
   def makeTruckCloseButton
-    UIView.new
+    button = UIButton.buttonWithType UIButtonTypeRoundedRect
+    button.frame = [[10, 210], [300, 30]]
+    button.setTitle("Close Truck", forState:UIControlStateNormal)
+    button.when(UIControlEventTouchUpInside) do
+      updateRemoteTruckStatus(:close)      
+    end
+  end
+
+  def updateRemoteTruckStatus(state)    
+    truckID = @truckIDTextField.text
+    return unless truckID    
+    url = AppConstants.url + "/truck/#{truckID}/#{state.to_s}"
+    BubbleWrap::HTTP.put(url) do |response|      
+      if response.ok?
+        open = state == :open ? true : false
+        updateTruckStatusText({"open" => open})
+      elsif response.status_code.to_s =~ /4\d\d/
+        @truckStatus.text = "Error!"
+        p "Updating got a 4xx response: #{response}"
+      else
+        @truckStatus.text = response.error_message
+        p "Updating got a non-4xx error: #{response}"
+      end
+    end
+  end
+
+  def updateTruckStatusText(json)    
+    open = json["open"]
+    if open
+      @truckStatus.text = "Open!"
+    else
+      @truckStatus.text = "Closed."
+    end 
   end
 
 end
