@@ -8,6 +8,8 @@ gem 'rails', '3.2.8'
 gem 'mysql2'
 gem 'geokit-rails3'
 gem 'rapns'
+gem 'delayed_job_active_record' #rake jobs:work
+#gem 'daemons' #RAILS_ENV=production script/delayed_job start
 
 
 # Gems used only for assets and not required
@@ -33,6 +35,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'timecop'
 end 
 
 # To use ActiveModel has_secure_password
