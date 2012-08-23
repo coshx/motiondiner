@@ -1,0 +1,2 @@
+echo "Using 1.9.3@motiondiner-ios"
+rvm --create use 1.9.3@motiondiner-ios
