@@ -32,8 +32,12 @@ protected
         logger.error n.inspect
       end
     end
+    schedule_next_truck_notification
   end
   handle_asynchronously :send_opening_notification, :run_at => Proc.new { self.scheduled_for } 
 
-
+  def schedule_next_truck_notification
+    truck.create_opening_notification
+  end
+  handle_asynchronously :schedule_next_truck_notification, :run_at => Proc.new { 2.hours.from_now }
 end
