@@ -1,10 +1,12 @@
 class TruckController < ApplicationController
 
-  before_filter :load_truck, :only => [:open, :close]
+  before_filter :load_truck, :only => [:open, :close, :show]
 
 
   #restful actions
-
+  def show
+    render :json => @truck.to_json
+  end
 
   #non-restful actions
   def open
