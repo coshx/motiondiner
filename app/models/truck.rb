@@ -2,7 +2,11 @@ class Truck < ActiveRecord::Base
   attr_accessible :name, :open
 
   has_many :openings
-  has_many :rapns_notifications
+  has_many :notifications
+
+  def closed?
+    !opened?
+  end
 
   def current_opening
     return nil unless self.open?
@@ -27,25 +31,39 @@ class Truck < ActiveRecord::Base
     self.open = false
     self.save!
 
-    schedule_opening_notifications(Date.today) #delay_job canidate
+    create_opening_notification
   end
 
-  def schedule_opening_notifications(date)
+  def create_opening_notification(date = Date.today)
     #return if date is within a week from today or there is already a future rapns_notifications waiting in queue
-    return if date + 1.week + 1.day > Date.today || (self.rapns_notifications.select {|n| n.deliver_after > DateTime.now}).present?
-    #find distrubution from past 2 month on day of week
-    recent_openings = Opening.where(:truck_id => self.id).where("created_at > ?", DateTime.now - 2.monthes).select{|o| o.created_at.wday == date.wday}
-    recent_openings = recent_openings.distrubution_hash
+    return if date > Date.today + 1.week || Notification.has_queue_for_truck?(self.id)
+    #find distrubution from past 2 month on day of week. A distrubution from the past week could also be a good idea...
+    recent_openings = Opening.where(:truck_id => self.id).where("created_at > ?", DateTime.now - 2.months).select{|o| o.created_at.wday == date.wday}
+
+    opening_distribution = Hash.new(0)
+    recent_openings.each do |opening|
+      similar_openings_count = Opening.where(:truck_id => self.id).where("created_at > ? AND created_at < ?", opening.created_at - 30.minutes, opening.created_at + 30.minutes)
+      opening_distribution[open] = similar_openings_count
+    end
+    
+
     #weight distributions by date
     weighted_by_date = {}
-    recent_openings.each do |opening, num_occurences|
-      weighted_by_date[opening] = num_occurences * (1 - (Date.today - o.created_at.to_date)/124.0)
+    opening_distribution.each do |opening, num_occurences|
+      weighted_by_date[opening] = num_occurences * (1 - (Date.today - opening.created_at.to_date)/124.0)
     end
     #get top distribution
     most_likely_opening = weighted_by_date.sort{|a,b| a[1] <=> b[1]}.last
-    #if top distrubution value is high enough,schedule notification
-    if most_likely_opening[1] > 0.8
-    #schedule_opening_notifications for tomorrow
-    schedule_opening_notifications(date.tomorrow)
+    #if top distrubution value is high enough,schedule notification (give them 10 min extra to open via motion-diner)
+    if most_likely_opening && most_likely_opening[1] > 0.8
+      n = Notification.create(truck_id: self.id)
+      self.notifications << n
+      self.save!
+      n.schedule_opening_notification(DateTime.parse(date.to_s + " " +(most_likely_opening[0].created_at + 10.minutes).strftime("%I:%M:%S%p").to_s))
+    end
+    #try schedule_opening_notifications for tomorrow
+    create_opening_notification(date.tomorrow)
   end
+  #handle_asynchronously :create_opening_notification
+
 end

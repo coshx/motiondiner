@@ -50,5 +50,36 @@ describe Truck do
       truck.close!
       truck.last_opening.closed_at.should == now
     end
-  end 
+  end
+
+  describe "create_opening_notification" do
+    let(:notification_delay) {10.minutes}
+    before :each do
+      Timecop.freeze(DateTime.now)
+      #Opening.any_instance.stub(:truck) {truck}
+    end
+    it "can schedule a notification for the same day" do
+      FactoryGirl.create(:opening, truck: truck, created_at: DateTime.now - 1.week + 1.hour)
+      FactoryGirl.create(:opening, truck: truck, created_at: DateTime.now - 2.weeks + 1.hour)
+      truck.create_opening_notification
+      Notification.last.scheduled_for.should == DateTime.now + 1.hour + notification_delay
+    end
+    it "can schedule a notification for the next day" do
+      FactoryGirl.create(:opening, truck: truck, created_at: DateTime.now + 1.day - 1.week + 1.hour)
+      FactoryGirl.create(:opening, truck: truck, created_at: DateTime.now + 1.day - 2.weeks + 1.hour)
+      truck.create_opening_notification
+      Notification.last.scheduled_for.should == DateTime.now + 1.day + 1.hour + notification_delay
+    end
+    it "schedules the more frequent distribution" do
+      binding.pry
+      FactoryGirl.create(:opening, truck: truck, created_at: DateTime.now + 2.days - 1.week + 1.hour)
+      FactoryGirl.create(:opening, truck: truck, created_at: DateTime.now + 2.days - 2.weeks + 2.hours)
+      FactoryGirl.create(:opening, truck: truck, created_at: DateTime.now + 2.days - 3.weeks + 2.hours)
+      truck.create_opening_notification
+      Notification.last.scheduled_for.should == DateTime.now + 2.days + 2.hour + notification_delay
+    end
+    after :each do
+      Timecop.return #release freeze
+    end
+  end
 end
