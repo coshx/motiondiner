@@ -54,8 +54,7 @@ class TruckViewController < UIViewController
           @truckStatus.text = "Closed."
         end
       elsif response.status_code.to_s =~ /4\d\d/
-        @truckStatus.text = "Error!"
-        p response.error_message
+        @truckStatus.text = "Error!"        
       else
         @truckStatus.text = response.error_message
       end
