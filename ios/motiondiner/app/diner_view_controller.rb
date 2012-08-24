@@ -19,10 +19,14 @@ class DinerViewController < UIViewController
   end
 
   def makeSearchBox
-    searchBox = UITextField.alloc.initWithFrame([[10,20], [300, 20]])
+    searchBox = UITextField.alloc.initWithFrame([[10,20], [300, 30]])
+    searchBox.clearsOnBeginEditing = true
+    searchBox.textColor = UIColor.whiteColor
+    searchBox.borderStyle = UITextBorderStyleRoundedRect
+    searchBox.delegate = self
     searchBox.text = "search"
     searchBox.opaque = "NO"
-    searchBox.backgroundColor = UIColor.lightGrayColor.colorWithAlphaComponent(0.5)
+    searchBox.backgroundColor = UIColor.darkGrayColor.colorWithAlphaComponent(0.5)
 
     return searchBox
   end
@@ -47,6 +51,10 @@ class DinerViewController < UIViewController
     @span = MKCoordinateSpan.new(0.02, 0.02)
     @region = MKCoordinateRegion.new(coord, @span)
     @mapView.setRegion(@region, animated: "YES")
+  end
+
+  def textFieldDidEndEditing(textField)
+    puts 'left search box' if textField == @searchBox
   end
 
 end
