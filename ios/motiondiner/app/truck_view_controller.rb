@@ -5,7 +5,7 @@ class TruckViewController < UIViewController
     self.title = "Run a Truck"
     # set background color to a nice steel blue
     self.view.backgroundColor = AppConstants.defaultBackgroundColor
-    @truck = nil # no truck until an ID is entered
+    @truck = ErrorTruck.new
   end
 
   def viewDidLoad
@@ -20,6 +20,12 @@ class TruckViewController < UIViewController
 
     @truckStatus = makeTruckStatus
     view.addSubview(@truckStatus)
+
+    @truckNameLabel = makeTruckNameLabel
+    view.addSubview(@truckNameLabel)
+
+    @truckName = makeTruckName
+    view.addSubview(@truckName)
 
     makeTruckOpenCloseButton
     toggleButtonState
@@ -80,7 +86,27 @@ class TruckViewController < UIViewController
   def makeTruckStatus
     labelFrame = [[130,90], [120, 30]] # origin, size
     label = UILabel.alloc.initWithFrame(labelFrame)
-    label.text = "Please input ID"
+    label.text = @truck.state
+    label.backgroundColor = UIColor.clearColor
+    label.font = UIFont.boldSystemFontOfSize(16)
+    label.textAlignment = UITextAlignmentCenter
+    label
+  end
+
+  def makeTruckNameLabel
+    labelFrame = [[10,120], [120, 30]] # origin, size
+    label = UILabel.alloc.initWithFrame(labelFrame)
+    label.text = "Truck Name:"
+    label.backgroundColor = UIColor.clearColor
+    label.font = UIFont.boldSystemFontOfSize(16)
+    label.textAlignment = UITextAlignmentLeft
+    label
+  end
+
+  def makeTruckName
+    labelFrame = [[130,120], [120, 30]] # origin, size
+    label = UILabel.alloc.initWithFrame(labelFrame)
+    label.text = @truck.state
     label.backgroundColor = UIColor.clearColor
     label.font = UIFont.boldSystemFontOfSize(16)
     label.textAlignment = UITextAlignmentCenter
@@ -132,7 +158,7 @@ class TruckViewController < UIViewController
 
   def updateTruckStatusText
     setOpenCloseButtonTitle
-    return "Please input ID" unless @truck
+    return "Please enter ID" unless @truck
     p "truck: #{@truck}, state: #{@truck.state}"
     text = case @truck.state
       when :open
@@ -140,10 +166,12 @@ class TruckViewController < UIViewController
       when :close
         "Closed."
       else
-        "Error"
+        @truck.state
     end
 
     @truckStatus.text = text
+
+    @truckName.text = @truck.name
   end
 
   def disableButton(button)
