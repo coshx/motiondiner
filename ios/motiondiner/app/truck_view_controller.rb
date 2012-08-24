@@ -89,7 +89,7 @@ class TruckViewController < UIViewController
     label.text = @truck.state
     label.backgroundColor = UIColor.clearColor
     label.font = UIFont.boldSystemFontOfSize(16)
-    label.textAlignment = UITextAlignmentCenter
+    label.textAlignment = UITextAlignmentLeft
     label
   end
 
@@ -104,12 +104,12 @@ class TruckViewController < UIViewController
   end
 
   def makeTruckName
-    labelFrame = [[130,120], [120, 30]] # origin, size
+    labelFrame = [[130,120], [200, 30]] # origin, size
     label = UILabel.alloc.initWithFrame(labelFrame)
     label.text = @truck.state
     label.backgroundColor = UIColor.clearColor
     label.font = UIFont.boldSystemFontOfSize(16)
-    label.textAlignment = UITextAlignmentCenter
+    label.textAlignment = UITextAlignmentLeft
     label
   end
 
