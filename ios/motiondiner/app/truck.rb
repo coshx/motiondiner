@@ -1,11 +1,12 @@
 class Truck
-  attr_accessor :id, :state
-  
-  def initialize(id, state)
+  attr_accessor :id, :state, :name
+
+  def initialize(id, state, name)
     @id = id.to_i
     # state comes in as true for open, false for closed - although sometimes we get nil for 'not set', which we're treating as closed
     state = false if state.nil?
     @state = state ? :open : :close # don't treat nil as an error, treat it as closed
+    @name = name
   end
 
   def open?
@@ -21,13 +22,13 @@ class Truck
     BubbleWrap::HTTP.get(url) do |response|
       if response.ok?
         json = BubbleWrap::JSON.parse(response.body.to_str)
-        block.call( Truck.new(json["id"], json["open"]) )
+        block.call( Truck.new(json["id"], json["open"], json["name"]) )
       elsif response.status_code.to_s =~ /4\d\d/
         p "Error getting truck with id #{id}, HTTP response 4xx: #{response.status_code}"
-        block.call( ErrorTruck.new(id, :error) )
+        block.call( ErrorTruck.new(id, :error, 'error') )
       else
         p "Error getting truck with id #{id}, HTTP response: #{response.status_code}, error message: #{response.error_message}"
-        block.call( ErrorTruck.new(id, :error) )
+        block.call( ErrorTruck.new(id, :error, 'error') )
       end
     end
   end
@@ -73,7 +74,7 @@ protected
       elsif response.status_code.to_s =~ /4\d\d/
         p "Updating got a 4xx response: #{response}"
         block.call( false )
-      else        
+      else
         p "Updating got a non-4xx error: #{response}, error message: #{response.error_message}"
         block.call( false )
       end
@@ -84,12 +85,16 @@ end
 
 # for when there is an error in fetching the truck at all, use this class
 class ErrorTruck < Truck
-  def initialize(id, state)
+  def initialize(id=0, state='', name='')
     super
   end
 
   def state
-    "Error"
+    "Please enter id"
+  end
+
+  def name
+    "Please enter id"
   end
 
   def error?
