@@ -20,22 +20,13 @@ class TruckViewController < UIViewController
 
     @truckStatus = makeTruckStatus
     view.addSubview(@truckStatus)
-
-    @truckOpenButton = makeTruckOpenButton
-    view.addSubview(@truckOpenButton)
-
-    @truckCloseButton = makeTruckCloseButton
-    view.addSubview(@truckCloseButton)
-
-    # now that we have the buttons, set their initial state to disabled (calling check will disable them since we don't have a truck yet)
-    toggleButtonState
   end
 
   # need to tie in to touch callbacks to hide keyboard when user taps away
   # adapted from http://stackoverflow.com/questions/1456120/hiding-the-keyboard-when-losing-focus-on-a-uitextview
   def touchesBegan(touches, withEvent:event)
     touch = event.allTouches.anyObject
-    if @truckIDTextField.isFirstResponder && touch.view != @truckIDTextField      
+    if @truckIDTextField.isFirstResponder && touch.view != @truckIDTextField
       @truckIDTextField.resignFirstResponder
       self.truckIDEntered
     end
@@ -93,40 +84,44 @@ class TruckViewController < UIViewController
     label
   end
 
-  def makeTruckOpenButton
-    button = UIButton.buttonWithType UIButtonTypeRoundedRect
-    button.frame = [[10, 150], [300, 30]]
-    button.setTitle("Open Truck", forState:UIControlStateNormal)
-    button.when(UIControlEventTouchUpInside) do
-      if @truck
-        @truck.open! do
-          updateTruckStatusText
-        end
-      end
-    end
+  def truckOpenCloseButton
+    @truckOpenCloseButton || makeTruckOpenCloseButton
   end
 
-  def makeTruckCloseButton
-    button = UIButton.buttonWithType UIButtonTypeRoundedRect
-    button.frame = [[10, 210], [300, 30]]
-    button.setTitle("Close Truck", forState:UIControlStateNormal)
-    button.when(UIControlEventTouchUpInside) do
+  def makeTruckOpenCloseButton
+    @truckOpenCloseButton = UIButton.buttonWithType UIButtonTypeRoundedRect
+    @truckOpenCloseButton.frame = [[10, 150], [300, 30]]
+    @truckOpenCloseButton.when(UIControlEventTouchUpInside) do
       if @truck
-        @truck.close! do
-          updateTruckStatusText
+        if @truck.state == :open
+          @truck.close! do
+            updateTruckStatusText
+            setOpenCloseButtonTitle
+          end
+        else
+          @truck.open! do
+            updateTruckStatusText
+            setOpenCloseButtonTitle
+          end
         end
       end
     end
+    view.addSubview(@truckOpenCloseButton)
+    setOpenCloseButtonTitle
   end
 
   def toggleButtonState
-    buttons = [@truckOpenButton, @truckCloseButton]
-
     if @truck.nil? || @truck.error?
-      buttons.each { |button| disableButton(button) }
+      disableButton(truckOpenCloseButton)
     else
-      buttons.each { |button| enableButton(button) }
+      enableButton(truckOpenCloseButton)
     end
+  end
+
+  def setOpenCloseButtonTitle
+    title = @truck.state == :open ? 'Close Truck' : 'Open Truck'
+
+    truckOpenCloseButton.setTitle(title, forState:UIControlStateNormal)
   end
 
   def updateTruckStatusText
