@@ -20,6 +20,9 @@ class TruckViewController < UIViewController
 
     @truckStatus = makeTruckStatus
     view.addSubview(@truckStatus)
+
+    makeTruckOpenCloseButton
+    toggleButtonState
   end
 
   # need to tie in to touch callbacks to hide keyboard when user taps away
@@ -119,12 +122,16 @@ class TruckViewController < UIViewController
   end
 
   def setOpenCloseButtonTitle
-    title = @truck.state == :open ? 'Close Truck' : 'Open Truck'
+    title = 'Open/Close Truck'
+    if @truck
+      title = @truck.state == :open ? 'Close Truck' : 'Open Truck'
+    end
 
     truckOpenCloseButton.setTitle(title, forState:UIControlStateNormal)
   end
 
   def updateTruckStatusText
+    setOpenCloseButtonTitle
     return "Please input ID" unless @truck
     p "truck: #{@truck}, state: #{@truck.state}"
     text = case @truck.state
