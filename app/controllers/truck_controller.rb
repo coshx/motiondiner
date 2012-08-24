@@ -1,9 +1,38 @@
 class TruckController < ApplicationController
 
-  before_filter :load_truck, :only => [:open, :close, :show]
-
+  before_filter :load_truck, :only => [:open, :close, :show, :update, :destroy]
 
   #restful actions
+  def create
+    @truck = Truck.new(params[:truck])
+
+    respond_to do |format|
+      if @truck.save
+        format.json { render json: @truck, status: :created, location: @truck }
+      else
+        format.json { render json: @truck.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def update
+    respond_to do |format|
+      if @truck.update_attributes(params[:truck])
+        format.json { head :no_content }
+      else
+        format.json { render json: @truck.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def destroy
+    @truck.destroy
+
+    respond_to do |format|
+      format.json { head :no_content }
+    end
+  end
+
   def show
     render :json => @truck.to_json
   end
@@ -11,12 +40,16 @@ class TruckController < ApplicationController
   #non-restful actions
   def open
     @truck.open_at(params[:lat].to_f, params[:lng].to_f)
-    render nothing: true
+    respond_to do |format|
+      format.json { head :no_content }
+    end
   end
 
   def close
     @truck.close!
-    render nothing: true
+    respond_to do |format|
+      format.json { head :no_content }
+    end
   end
 
 
