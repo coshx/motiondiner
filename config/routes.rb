@@ -16,6 +16,12 @@ MotionDiner::Application.routes.draw do
     end
   end
 
+  resources :client do
+    collection do
+      get 'near_by_trucks'
+    end
+  end
+
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
