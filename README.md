@@ -22,6 +22,8 @@ Of course, reality got in the way of making all of this happen in 48 hours. We f
   - get push notifications on the phone via Urban Airship
   - can be deployed to testers using TestFlight
 
+* A beautiful design. Please see images under https://github.com/coshx/motiondiner/tree/develop/app/assets/images.
+
 The notification hookup does work and you can receive them, but the server currently doesn't send notifications. We know it works because we can manually send messages to devices that have accepted notifications (and Urban Airship has a handy tool for doing so).
 
 ...
