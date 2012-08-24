@@ -10,7 +10,11 @@ class Truck
 
   def open?
     @state == :open
-  end  
+  end
+
+  def error?
+    false
+  end
 
   def self.findTruck(id, &block)
     url = getUrl(id)    
@@ -86,6 +90,10 @@ class ErrorTruck < Truck
 
   def state
     "Error"
+  end
+
+  def error?
+    true
   end
 
   def open!

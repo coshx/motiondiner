@@ -26,6 +26,9 @@ class TruckViewController < UIViewController
 
     @truckCloseButton = makeTruckCloseButton
     view.addSubview(@truckCloseButton)
+
+    # now that we have the buttons, set their initial state to disabled (calling check will disable them since we don't have a truck yet)
+    toggleButtonState
   end
 
   # need to tie in to touch callbacks to hide keyboard when user taps away
@@ -44,7 +47,8 @@ class TruckViewController < UIViewController
     truckID = @truckIDTextField.text    
     Truck.findTruck(truckID) do |truck|
       @truck = truck
-      updateTruckStatusText      
+      updateTruckStatusText
+      toggleButtonState
     end
   end
 
@@ -116,6 +120,16 @@ class TruckViewController < UIViewController
     end
   end
 
+  def toggleButtonState
+    buttons = [@truckOpenButton, @truckCloseButton]
+    
+    if @truck.nil? || @truck.error?
+      buttons.each { |button| disableButton(button) }
+    else
+      buttons.each { |button| enableButton(button) }
+    end
+  end
+
   def updateTruckStatusText
     return "Please input ID" unless @truck
     p "truck: #{@truck}, state: #{@truck.state}"
@@ -129,6 +143,16 @@ class TruckViewController < UIViewController
     end
 
     @truckStatus.text = text
+  end
+
+  def disableButton(button)
+    button.alpha = 0.6 # makes it look 'grayed out' and inactive
+    button.enabled = false
+  end
+
+  def enableButton(button)
+    button.alpha = 1.0 # restore to looking active and pushable
+    button.enabled = true
   end
 
 end
