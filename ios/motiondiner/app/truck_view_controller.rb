@@ -123,7 +123,7 @@ class TruckViewController < UIViewController
 
   def setOpenCloseButtonTitle
     title = 'Open/Close Truck'
-    if @truck
+    if @truck && [:open, :close].include?(@truck.state)
       title = @truck.state == :open ? 'Close Truck' : 'Open Truck'
     end
 
