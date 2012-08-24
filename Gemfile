@@ -27,6 +27,7 @@ end
 gem 'jquery-rails'
 
 group :development, :test do
+  gem 'heroku'
   gem 'pry'
   gem 'pry-remote'
   gem 'pry-nav'
