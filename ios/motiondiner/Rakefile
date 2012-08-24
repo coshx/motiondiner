@@ -8,6 +8,7 @@ Bundler.require
 
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
+  app.frameworks += ['CoreLocation', 'MapKit']
   app.name = 'MotionDiner'
 
   app.files_dependencies "app/welcome_view_controller.rb" => "app/diner_view_controller.rb",

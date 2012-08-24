@@ -4,6 +4,7 @@ class AppDelegate
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
     welcomeViewController = WelcomeViewController.alloc.init
     @window.rootViewController = UINavigationController.alloc.initWithRootViewController(welcomeViewController)
+    @window.rootViewController.wantsFullScreenLayout = true
     @window.makeKeyAndVisible
     requestNotificaitonPermissions
     true
