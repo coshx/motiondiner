@@ -23,10 +23,12 @@ class DinerViewController < UIViewController
     searchBox.clearsOnBeginEditing = true
     searchBox.textColor = UIColor.whiteColor
     searchBox.borderStyle = UITextBorderStyleRoundedRect
+    searchBox.clearButtonMode = UITextFieldViewModeWhileEditing
     searchBox.delegate = self
     searchBox.text = "search"
     searchBox.opaque = "NO"
     searchBox.backgroundColor = UIColor.darkGrayColor.colorWithAlphaComponent(0.5)
+
 
     return searchBox
   end
@@ -55,6 +57,11 @@ class DinerViewController < UIViewController
 
   def textFieldDidEndEditing(textField)
     puts 'left search box' if textField == @searchBox
+  end
+
+  def textFieldShouldReturn(textField)
+    @searchBox.resignFirstResponder
+    return true
   end
 
 end
