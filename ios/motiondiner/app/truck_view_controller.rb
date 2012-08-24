@@ -74,7 +74,7 @@ class TruckViewController < UIViewController
   end
 
   def makeTruckStatusLabel
-    labelFrame = [[10,90], [120, 30]] # origin, size
+    labelFrame = [[10,120], [120, 30]] # origin, size
     label = UILabel.alloc.initWithFrame(labelFrame)
     label.text = "Your Status:"
     label.backgroundColor = UIColor.clearColor
@@ -84,7 +84,7 @@ class TruckViewController < UIViewController
   end
 
   def makeTruckStatus
-    labelFrame = [[130,90], [120, 30]] # origin, size
+    labelFrame = [[130,120], [120, 30]] # origin, size
     label = UILabel.alloc.initWithFrame(labelFrame)
     label.text = @truck.state
     label.backgroundColor = UIColor.clearColor
@@ -94,7 +94,7 @@ class TruckViewController < UIViewController
   end
 
   def makeTruckNameLabel
-    labelFrame = [[10,120], [120, 30]] # origin, size
+    labelFrame = [[10,90], [120, 30]] # origin, size
     label = UILabel.alloc.initWithFrame(labelFrame)
     label.text = "Truck Name:"
     label.backgroundColor = UIColor.clearColor
@@ -104,7 +104,7 @@ class TruckViewController < UIViewController
   end
 
   def makeTruckName
-    labelFrame = [[130,120], [200, 30]] # origin, size
+    labelFrame = [[130,90], [200, 30]] # origin, size
     label = UILabel.alloc.initWithFrame(labelFrame)
     label.text = @truck.state
     label.backgroundColor = UIColor.clearColor
