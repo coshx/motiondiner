@@ -17,8 +17,8 @@ class Truck
   end
 
   def self.findTruck(id, &block)
-    url = getUrl(id)    
-    BubbleWrap::HTTP.get(url) do |response|            
+    url = getUrl(id)
+    BubbleWrap::HTTP.get(url) do |response|
       if response.ok?
         json = BubbleWrap::JSON.parse(response.body.to_str)
         block.call( Truck.new(json["id"], json["open"]) )

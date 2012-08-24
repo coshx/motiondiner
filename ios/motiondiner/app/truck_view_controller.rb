@@ -12,7 +12,7 @@ class TruckViewController < UIViewController
     @truckIDLabel = makeTruckIDLabel
     self.view.addSubview(@truckIDLabel)
 
-    @truckIDTextField = makeTruckIDTextField    
+    @truckIDTextField = makeTruckIDTextField
     view.addSubview(@truckIDTextField)
 
     @truckStatusLabel = makeTruckStatusLabel
@@ -44,7 +44,7 @@ class TruckViewController < UIViewController
   end
 
   def truckIDEntered
-    truckID = @truckIDTextField.text    
+    truckID = @truckIDTextField.text
     Truck.findTruck(truckID) do |truck|
       @truck = truck
       updateTruckStatusText
@@ -58,7 +58,7 @@ class TruckViewController < UIViewController
     label.text = "Truck ID:"
     label.backgroundColor = UIColor.clearColor
     label.font = UIFont.boldSystemFontOfSize(16)
-    label.textAlignment = UITextAlignmentLeft    
+    label.textAlignment = UITextAlignmentLeft
     label
   end
 
@@ -68,7 +68,7 @@ class TruckViewController < UIViewController
     textField.borderStyle = UITextBorderStyleRoundedRect
     textField.placeholder = "Your ID #"
     textField.keyboardType = UIKeyboardTypeNumberPad
-    textField.textAlignment = UITextAlignmentCenter    
+    textField.textAlignment = UITextAlignmentCenter
 
     textField
   end
@@ -89,7 +89,7 @@ class TruckViewController < UIViewController
     label.text = "Please input ID"
     label.backgroundColor = UIColor.clearColor
     label.font = UIFont.boldSystemFontOfSize(16)
-    label.textAlignment = UITextAlignmentCenter    
+    label.textAlignment = UITextAlignmentCenter
     label
   end
 
@@ -98,7 +98,6 @@ class TruckViewController < UIViewController
     button.frame = [[10, 150], [300, 30]]
     button.setTitle("Open Truck", forState:UIControlStateNormal)
     button.when(UIControlEventTouchUpInside) do
-      #updateRemoteTruckStatus(:open)
       if @truck
         @truck.open! do
           updateTruckStatusText
@@ -116,13 +115,13 @@ class TruckViewController < UIViewController
         @truck.close! do
           updateTruckStatusText
         end
-      end      
+      end
     end
   end
 
   def toggleButtonState
     buttons = [@truckOpenButton, @truckCloseButton]
-    
+
     if @truck.nil? || @truck.error?
       buttons.each { |button| disableButton(button) }
     else
