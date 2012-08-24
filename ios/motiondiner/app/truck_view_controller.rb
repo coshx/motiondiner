@@ -5,6 +5,7 @@ class TruckViewController < UIViewController
     self.title = "Run a Truck"
     # set background color to a nice steel blue
     self.view.backgroundColor = AppConstants.defaultBackgroundColor
+    @truck = nil # no truck until an ID is entered
   end
 
   def viewDidLoad
@@ -36,22 +37,14 @@ class TruckViewController < UIViewController
       self.truckIDEntered
     end
 
-    super
+    super # call super here or else the touch event get swallowed up
   end
 
-  def truckIDEntered    
-    truckID = @truckIDTextField.text
-    url = AppConstants.url + "/truck/#{truckID}"    
-    BubbleWrap::HTTP.get(url) do |response|      
-      #p response.body.to_str
-      if response.ok?
-        json = BubbleWrap::JSON.parse(response.body.to_str)
-        updateTruckStatusText(json)
-      elsif response.status_code.to_s =~ /4\d\d/
-        @truckStatus.text = "Error!"        
-      else
-        @truckStatus.text = response.error_message
-      end
+  def truckIDEntered
+    truckID = @truckIDTextField.text    
+    Truck.findTruck(truckID) do |truck|
+      @truck = truck
+      updateTruckStatusText      
     end
   end
 
@@ -101,7 +94,12 @@ class TruckViewController < UIViewController
     button.frame = [[10, 150], [300, 30]]
     button.setTitle("Open Truck", forState:UIControlStateNormal)
     button.when(UIControlEventTouchUpInside) do
-      updateRemoteTruckStatus(:open)      
+      #updateRemoteTruckStatus(:open)
+      if @truck
+        @truck.open! do
+          updateTruckStatusText
+        end
+      end
     end
   end
 
@@ -110,35 +108,27 @@ class TruckViewController < UIViewController
     button.frame = [[10, 210], [300, 30]]
     button.setTitle("Close Truck", forState:UIControlStateNormal)
     button.when(UIControlEventTouchUpInside) do
-      updateRemoteTruckStatus(:close)      
+      if @truck
+        @truck.close! do
+          updateTruckStatusText
+        end
+      end      
     end
   end
 
-  def updateRemoteTruckStatus(state)    
-    truckID = @truckIDTextField.text
-    return unless truckID    
-    url = AppConstants.url + "/truck/#{truckID}/#{state.to_s}"
-    BubbleWrap::HTTP.put(url) do |response|      
-      if response.ok?
-        open = state == :open ? true : false
-        updateTruckStatusText({"open" => open})
-      elsif response.status_code.to_s =~ /4\d\d/
-        @truckStatus.text = "Error!"
-        p "Updating got a 4xx response: #{response}"
+  def updateTruckStatusText
+    return "Please input ID" unless @truck
+    p "truck: #{@truck}, state: #{@truck.state}"
+    text = case @truck.state
+      when :open
+        "Open!"
+      when :close
+        "Closed."
       else
-        @truckStatus.text = response.error_message
-        p "Updating got a non-4xx error: #{response}"
-      end
+        "Error"
     end
-  end
 
-  def updateTruckStatusText(json)    
-    open = json["open"]
-    if open
-      @truckStatus.text = "Open!"
-    else
-      @truckStatus.text = "Closed."
-    end 
+    @truckStatus.text = text
   end
 
 end

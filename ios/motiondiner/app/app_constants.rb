@@ -6,7 +6,7 @@ class AppConstants
     end
 
     def url      
-      "http://motion-diner-api.herokuapp.com"      
+      "http://motion-diner-api.herokuapp.com"
     end
 
   end
