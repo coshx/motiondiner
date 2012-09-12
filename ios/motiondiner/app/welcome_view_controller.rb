@@ -12,27 +12,25 @@ class WelcomeViewController < UIViewController
     # notice that we just used a string as the selector name - this is a nice convenience thing RubyMotion lets us do, normally we'd need to make sure we passed in a selector, not just a string
     self.navigationItem.rightBarButtonItem = shareButton
 
+    # need the segmented control to display in the toolbar
+    # making an instance variable so we can access it elsewhere
+    @segmentedBar = UISegmentedControl.alloc.initWithItems(["I Want Food", "I Am a Truck"])
+    @segmentedBar.addTarget(self, action:"segmentSelected", forControlEvents:UIControlEventValueChanged)
+    @segmentedBar.momentary = true # don't keep the sides 'pressed' when tapped
+    @segmentedBar.segmentedControlStyle = UISegmentedControlStyleBar # otherwise it's waaaay too large
+
     # add in the buttons for the toolbar at the bottom
     self.toolbarItems = []
     # need spacers around buttons to keep them from just sitting on the left
     self.toolbarItems << UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action: nil)
-    self.toolbarItems << UIBarButtonItem.alloc.initWithTitle("I Want Food", style:UIBarButtonItemStyleBordered, target:self, action:"dinerSelected")
-    self.toolbarItems << UIBarButtonItem.alloc.initWithTitle("I Am A Truck", style:UIBarButtonItemStyleBordered, target:self, action:"truckSelected")
+    self.toolbarItems << UIBarButtonItem.alloc.initWithCustomView(@segmentedBar)
     self.toolbarItems << UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action: nil)
   end
 
   # viewDidLoad is called when this viewController's main view is actually shown, so here is where we can make this actually get displayed
   def viewDidLoad
-    # adding the two buttons
-    @dinerButton = makeDinerButton
-    @truckButton = makeTruckButton
-
-    view.addSubview(@dinerButton)
-    view.addSubview(@truckButton)
-
-    # make the toolbar slide up
-    self.parentViewController.setToolbarHidden(false, animated:true)
-
+    # show the toolbar
+    self.parentViewController.setToolbarHidden(false, animated:false)
   end
 
   # called when diner button is activated
@@ -74,6 +72,16 @@ class WelcomeViewController < UIViewController
   def share
     services = ["Facebook", "Twitter", "LinkedIn", "Pinterest", "LiveJournal"]
     App.alert("Thanks for spamming your #{services.shuffle.first} friends with our app!")
+  end
+
+  def segmentSelected
+    puts "segmentSelected"
+    puts @segmentedBar
+    if @segmentedBar.selectedSegmentIndex == 0
+      dinerSelected
+    else
+      truckSelected
+    end
   end
 
 end

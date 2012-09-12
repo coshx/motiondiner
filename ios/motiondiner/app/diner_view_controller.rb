@@ -7,7 +7,7 @@ class DinerViewController < UIViewController
     self.view.backgroundColor = AppConstants.defaultBackgroundColor
   end
 
-  def viewDidLoad    
+  def viewDidLoad
     labelFrame = [[10,200], [300, 80]] # origin, size
     label = UILabel.alloc.initWithFrame(labelFrame)
     label.text = "U R DINER WOO"
