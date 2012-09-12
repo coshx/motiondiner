@@ -6,6 +6,11 @@ class WelcomeViewController < UIViewController
     self.title = "MotionDiner"
     # set background color to a nice steel blue
     self.view.backgroundColor = AppConstants.defaultBackgroundColor
+
+    # now let's add the 'share' button to the top-right
+    shareButton = UIBarButtonItem.alloc.initWithTitle("Share", style:UIBarButtonItemStylePlain, target:self, action:"share")
+    # notice that we just used a string as the selector name - this is a nice convenience thing RubyMotion lets us do, normally we'd need to make sure we passed in a selector, not just a string
+    self.navigationItem.rightBarButtonItem = shareButton
   end
 
   # viewDidLoad is called when this viewController's main view is actually shown, so here is where we can make this actually get displayed
@@ -52,6 +57,11 @@ class WelcomeViewController < UIViewController
     button.frame = buttonFrame
     
     button
+  end
+
+  def share
+    services = ["Facebook", "Twitter", "LinkedIn", "Pinterest", "LiveJournal"]
+    App.alert("Thanks for spamming your #{services.shuffle.first} friends with our app!")
   end
 
 end
