@@ -11,6 +11,14 @@ class WelcomeViewController < UIViewController
     shareButton = UIBarButtonItem.alloc.initWithTitle("Share", style:UIBarButtonItemStylePlain, target:self, action:"share")
     # notice that we just used a string as the selector name - this is a nice convenience thing RubyMotion lets us do, normally we'd need to make sure we passed in a selector, not just a string
     self.navigationItem.rightBarButtonItem = shareButton
+
+    # add in the buttons for the toolbar at the bottom
+    self.toolbarItems = []
+    # need spacers around buttons to keep them from just sitting on the left
+    self.toolbarItems << UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action: nil)
+    self.toolbarItems << UIBarButtonItem.alloc.initWithTitle("I Want Food", style:UIBarButtonItemStyleBordered, target:self, action:"dinerSelected")
+    self.toolbarItems << UIBarButtonItem.alloc.initWithTitle("I Am A Truck", style:UIBarButtonItemStyleBordered, target:self, action:"truckSelected")
+    self.toolbarItems << UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action: nil)
   end
 
   # viewDidLoad is called when this viewController's main view is actually shown, so here is where we can make this actually get displayed
@@ -21,6 +29,10 @@ class WelcomeViewController < UIViewController
 
     view.addSubview(@dinerButton)
     view.addSubview(@truckButton)
+
+    # make the toolbar slide up
+    self.parentViewController.setToolbarHidden(false, animated:true)
+
   end
 
   # called when diner button is activated
