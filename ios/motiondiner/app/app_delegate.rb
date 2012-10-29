@@ -8,20 +8,20 @@ class AppDelegate
 
     #requestNotificaitonPermissions
     # Urban Airship setup - Init Airship launch options
-    takeOffOptions = NSMutableDictionary.alloc.init
-    takeOffOptions.setValue( launchOptions, forKey: UAirshipTakeOffOptionsLaunchOptionsKey )
-    UAirship.takeOff( takeOffOptions )
+    # takeOffOptions = NSMutableDictionary.alloc.init
+    # takeOffOptions.setValue( launchOptions, forKey: UAirshipTakeOffOptionsLaunchOptionsKey )
+    # UAirship.takeOff( takeOffOptions )
 
-    # now actually register for notifications    
-    UAPush.shared.registerForRemoteNotificationTypes( 
-      UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound
-    )
+    # # now actually register for notifications    
+    # UAPush.shared.registerForRemoteNotificationTypes( 
+    #   UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound
+    # )
 
     true
   end
 
   def applicationWillTerminate(application)
-    UAirship.land
+    # UAirship.land
   end
 
   def application(application, didRegisterForRemoteNotificationsWithDeviceToken:deviceToken)

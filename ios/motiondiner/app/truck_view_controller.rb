@@ -15,7 +15,7 @@ class TruckViewController < UIViewController
     @truckIDTextField = makeTruckIDTextField
     view.addSubview(@truckIDTextField)
 
-    @truckStatusLabel = makeTruckStatusLabel
+    # @truckStatusLabel = makeTruckStatusLabel
     view.addSubview(@truckStatusLabel)
 
     @truckStatus = makeTruckStatus
@@ -73,18 +73,18 @@ class TruckViewController < UIViewController
     textField
   end
 
-  def makeTruckStatusLabel
-    labelFrame = [[10,120], [120, 30]] # origin, size
-    label = UILabel.alloc.initWithFrame(labelFrame)
-    label.text = "Your Status:"
-    label.backgroundColor = UIColor.clearColor
-    label.font = UIFont.boldSystemFontOfSize(16)
-    label.textAlignment = UITextAlignmentLeft
-    label
-  end
+  # def makeTruckStatusLabel
+  #   labelFrame = [[10,120], [120, 30]] # origin, size
+  #   label = UILabel.alloc.initWithFrame(labelFrame)
+  #   label.text = "Currently Open?"
+  #   label.backgroundColor = UIColor.clearColor
+  #   label.font = UIFont.boldSystemFontOfSize(16)
+  #   label.textAlignment = UITextAlignmentLeft
+  #   label
+  # end
 
   def makeTruckStatus
-    labelFrame = [[130,120], [120, 30]] # origin, size
+    labelFrame = [[10,120], [200, 30]] # origin, size
     label = UILabel.alloc.initWithFrame(labelFrame)
     label.text = @truck.state
     label.backgroundColor = UIColor.clearColor
@@ -118,25 +118,26 @@ class TruckViewController < UIViewController
   end
 
   def makeTruckOpenCloseButton
-    @truckOpenCloseButton = UIButton.buttonWithType UIButtonTypeRoundedRect
-    @truckOpenCloseButton.frame = [[10, 150], [300, 30]]
-    @truckOpenCloseButton.when(UIControlEventTouchUpInside) do
-      if @truck
-        if @truck.state == :open
-          @truck.close! do
-            updateTruckStatusText
-            setOpenCloseButtonTitle
-          end
-        else
-          @truck.open! do
-            updateTruckStatusText
-            setOpenCloseButtonTitle
-          end
-        end
+    @truckOpenCloseButton = UISwitch.alloc.initWithFrame([[200, 125], [0, 0]])
+    @truckOpenCloseButton.addTarget(self,
+                                    action:'truckOpenCloseButtonChanged',
+                                    forControlEvents:UIControlEventValueChanged)
+    view.addSubview(@truckOpenCloseButton)
+    # setTruckOpenClosedButtonEnabledState
+  end
+
+  def truckOpenCloseButtonChanged
+    if @truckOpenCloseButton.on?
+      @truck.open! do
+        updateTruckStatusText
+        # setTruckOpenClosedButtonEnabledState
+      end
+    else
+      @truck.close! do
+        updateTruckStatusText
+        # setTruckOpenClosedButtonEnabledState
       end
     end
-    view.addSubview(@truckOpenCloseButton)
-    setOpenCloseButtonTitle
   end
 
   def toggleButtonState
@@ -147,24 +148,22 @@ class TruckViewController < UIViewController
     end
   end
 
-  def setOpenCloseButtonTitle
-    title = 'Open/Close Truck'
-    if @truck && [:open, :close].include?(@truck.state)
-      title = @truck.state == :open ? 'Close Truck' : 'Open Truck'
-    end
-
-    truckOpenCloseButton.setTitle(title, forState:UIControlStateNormal)
-  end
+  # def setTruckOpenClosedButtonEnabledState
+  #   if @truck && [:open, :close].include?(@truck.state)
+  #     @truckOpenCloseButton.on(@truck.state == :open)
+  #     # title = @truck.state == :open ? 'Close Truck' : 'Open Truck'
+  #   end
+  # end
 
   def updateTruckStatusText
-    setOpenCloseButtonTitle
+    # setTruckOpenClosedButtonEnabledState
     return "Please enter ID" unless @truck
     p "truck: #{@truck}, state: #{@truck.state}"
     text = case @truck.state
       when :open
-        "Open!"
+        "Currently Open!"
       when :close
-        "Closed."
+        "Currently Closed."
       else
         @truck.state
     end
