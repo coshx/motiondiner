@@ -17,9 +17,9 @@ class Truck < ActiveRecord::Base
     Opening.where(truck_id: self.id).order("updated_at DESC").limit(1).first
   end
 
-  def open_at(lat, lng)
+  def open_at!(lat, lng)
     self.openings << Opening.create(lat: lat, lng: lng)
-    self.open =true
+    self.open = true
     self.save!
   end
 

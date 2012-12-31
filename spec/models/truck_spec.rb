@@ -24,13 +24,13 @@ describe Truck do
     end
   end
 
-  describe "open_at" do
+  describe "open_at!" do
     it "opens the truck" do
-      truck.open_at(40.0150, 105.2700)
+      truck.open_at!(40.0150, 105.2700)
       truck.open?.should be_true
     end
     it "stores the opening of the truck" do
-      truck.open_at(40.0150, 105.2700)
+      truck.open_at!(40.0150, 105.2700)
       truck.current_opening.lat.should == 40.015
       truck.current_opening.lng.should == 105.27
     end
@@ -38,7 +38,7 @@ describe Truck do
 
   describe "close!" do
     before :each do
-      truck.open_at(40.0150, 105.2700)
+      truck.open_at!(40.0150, 105.2700)
     end
     it "closes the truck" do
       truck.close!

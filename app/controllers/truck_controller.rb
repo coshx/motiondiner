@@ -39,7 +39,7 @@ class TruckController < ApplicationController
 
   #non-restful actions
   def open
-    @truck.open_at(params[:lat].to_f, params[:lng].to_f)
+    @truck.open_at!(params[:lat].to_f, params[:lng].to_f)
     respond_to do |format|
       format.json { head :no_content }
     end
